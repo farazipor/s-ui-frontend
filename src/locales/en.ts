@@ -200,6 +200,10 @@ export default {
     links: "Links",
     external: "External Link",
     sub: "External Subscription",
+
+    // ✅ Added for max online
+    maxOnline: "Max online",
+    maxOnlineHint: "0 = unlimited",
   },
   bulk: {
     order: "Order",
