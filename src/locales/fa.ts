@@ -200,6 +200,10 @@ export default {
     links: "لینک‌ها",
     external: "لینک‌ خارجی",
     sub: "سابسکریپشن خارجی",
+
+    // ✅ Added for max online
+    maxOnline: "حداکثر آنلاین همزمان",
+    maxOnlineHint: "۰ یعنی نامحدود",
   },
   bulk: {
     order: "ترتیب",
