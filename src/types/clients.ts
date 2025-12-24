@@ -8,13 +8,14 @@ export interface Link {
 
 export interface Client {
   id?: number
-	enable: boolean
-	name: string
-	config?: Config
-	inbounds: number[]
+  enable: boolean
+  name: string
+  config?: Config
+  inbounds: number[]
   links?: Link[]
-	volume: number
-	expiry: number
+  volume: number
+  expiry: number
+  maxOnline: number   // ✅ NEW
   up: number
   down: number
   desc: string
@@ -29,6 +30,7 @@ const defaultClient: Client = {
   links: [],
   volume: 0,
   expiry: 0,
+  maxOnline: 0,       // ✅ NEW (0 = unlimited)
   up: 0,
   down: 0,
   desc: "",
@@ -100,65 +102,20 @@ export function randomConfigs(user: string): Config {
   const ssPassword32 = RandomUtil.randomShadowsocksPassword(32)
   const uuid = RandomUtil.randomUUID()
   return {
-    mixed: {
-      username: user,
-      password: mixedPassword,
-    },
-    socks: {
-      username: user,
-      password: mixedPassword,
-    },
-    http: {
-      username: user,
-      password: mixedPassword,
-    },
-    shadowsocks: {
-      name: user,
-      password: ssPassword32,
-    },
-    shadowsocks16: {
-      name: user,
-      password: ssPassword16,
-    },
-    shadowtls: {
-      name: user,
-      password: ssPassword32,
-    },
-    vmess: {
-      name: user,
-      uuid: uuid,
-      alterId: 0,
-    },
-    vless: {
-      name: user,
-      uuid: uuid,
-      flow: "xtls-rprx-vision",
-    },
-    anytls: {
-      name: user,
-      password: mixedPassword,
-    },
-    trojan: {
-      name: user,
-      password: mixedPassword,
-    },
-    naive: {
-      username: user,
-      password: mixedPassword,
-    },
-    hysteria: {
-      name: user,
-      auth_str: mixedPassword,
-    },
-    tuic: {
-      name: user,
-      uuid: uuid,
-      password: mixedPassword,
-    },
-    hysteria2: {
-      name: user,
-      password: mixedPassword,
-    },
+    mixed: { username: user, password: mixedPassword },
+    socks: { username: user, password: mixedPassword },
+    http: { username: user, password: mixedPassword },
+    shadowsocks: { name: user, password: ssPassword32 },
+    shadowsocks16: { name: user, password: ssPassword16 },
+    shadowtls: { name: user, password: ssPassword32 },
+    vmess: { name: user, uuid: uuid, alterId: 0 },
+    vless: { name: user, uuid: uuid, flow: "xtls-rprx-vision" },
+    anytls: { name: user, password: mixedPassword },
+    trojan: { name: user, password: mixedPassword },
+    naive: { username: user, password: mixedPassword },
+    hysteria: { name: user, auth_str: mixedPassword },
+    tuic: { name: user, uuid: uuid, password: mixedPassword },
+    hysteria2: { name: user, password: mixedPassword },
   }
 }
 
@@ -166,8 +123,11 @@ export function createClient<T extends Client>(json?: Partial<T>): Client {
   defaultClient.name = RandomUtil.randomSeq(8)
   const defaultObject: Client = { ...defaultClient, ...(json || {}) }
 
+  // ✅ Ensure maxOnline exists even if backend doesn't send it
+  if (defaultObject.maxOnline == null) defaultObject.maxOnline = 0
+
   // Add missing config
   defaultObject.config = { ...randomConfigs(defaultObject.name), ...defaultObject.config }
-  
+
   return defaultObject
 }
