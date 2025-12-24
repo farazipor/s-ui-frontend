@@ -36,17 +36,34 @@
               </v-combobox>
             </v-col>
           </v-row>
+
+          <!-- ✅ UPDATED: add maxOnline field next to volume/expiry -->
           <v-row>
             <v-col cols="12" sm="6" md="4">
               <v-combobox v-model="bulkData.group" :items="groups" :label="$t('client.group')" hide-details></v-combobox>
             </v-col>
+
             <v-col cols="12" sm="6" md="4">
               <v-text-field v-model.number="bulkData.Volume" type="number" min="0" :label="$t('stats.volume')" suffix="GiB" hide-details></v-text-field>
             </v-col>
+
             <v-col cols="12" sm="6" md="4">
               <DatePick :expiry="bulkData.expiry" @submit="setDate" />
             </v-col>
+
+            <v-col cols="12" sm="6" md="4">
+              <v-text-field
+                v-model.number="bulkData.maxOnline"
+                type="number"
+                min="0"
+                :label="$t('client.maxOnline')"
+                :hint="$t('client.maxOnlineHint')"
+                persistent-hint
+                hide-details
+              ></v-text-field>
+            </v-col>
           </v-row>
+
           <v-row>
             <v-col>
               <v-combobox
@@ -106,6 +123,7 @@ export default {
         clientInbounds: [],
         expiry: 0,
         Volume: 0,
+        maxOnline: 0, // ✅ NEW
       },
       patterns: [
         { title: i18n.global.t("bulk.random"), value: "random" },
@@ -125,6 +143,7 @@ export default {
         clientInbounds: [],
         expiry: 0,
         Volume: 0,
+        maxOnline: 0, // ✅ NEW
       }
     },
     closeModal() {
@@ -148,6 +167,7 @@ export default {
           links: [],
           volume: this.bulkData.Volume*(1024 ** 3),
           expiry: this.bulkData.expiry,
+          maxOnline: this.bulkData.maxOnline, // ✅ NEW
           up: 0,
           down: 0,
           desc: this.genByPattern(this.bulkData.desc, i),
@@ -195,5 +215,4 @@ export default {
   },
   components: { DatePick },
 }
-
 </script>
